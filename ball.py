@@ -27,17 +27,15 @@ def init_main_window():
     button1 = tkinter.Button(root, text="Button1", command=button1_command())
     # упаковываем кнопку, иначе ее не будет видно
     button1.bind("<Button>",print_hello)
-    button1.pack()
 
     button2 = tkinter.Button(root, text="Button2")
     # упаковываем кнопку, иначе ее не будет видно
     button2.bind("<Button>",print_hello)
-    button2.pack()
 
-    variable = tkinter.IntVar()
-    label = tkinter.Label(root, text="Какой-то текст")
-    scale = tkinter.Scale(root)
-    text = tkinter.Entry(root)
+    variable = tkinter.IntVar(0)
+    label = tkinter.Label(root, textvariable=variable)
+    scale = tkinter.Scale(root, orient=tkinter.HORIZONTAL, length=300, from_=0, to=100, tickinterval=25, resolution=5, variable=variable)
+    text = tkinter.Entry(root, textvariable=variable)
 
     for obj in button1, button2, label, scale, text:
         obj.pack()
