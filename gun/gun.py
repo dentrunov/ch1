@@ -1,9 +1,9 @@
 from tkinter import *
 from random import choice, randint
 
-
+#я взял для удобства квадратный экран
 screen_width = 400
-screen_height = 300
+screen_height = 400
 timer_delay = 100
 
 
@@ -75,7 +75,6 @@ class Gun:
         стрельба
         :return: возвращает объект снаряда
         """
-        Ball()
         shell = Ball()
         shell._x = self._x + self._lx
         shell._y = self._y + self._ly
@@ -84,6 +83,26 @@ class Gun:
         shell._R = 5
         shell.fly()
         return shell
+
+
+    def gun_move(self):
+        """
+        движение пушки за мышью и смещение шарика
+        :return:
+        """
+        self._kx = self._x+self._lx
+        self._ky = self._y+self._ly
+        if self._kx > move_x:
+            self._kx = move_x
+        elif self._ky < move_y:
+            self._ky = move_y
+        elif move_x>self._kx and move_y<screen_width-move_x:
+            self._kx = move_x
+        elif move_y<self._ky and move_x>screen_height-move_y:
+            self._ky = move_y
+        canvas.coords(self._avatar, self._x, self._y,
+                      self._kx, self._ky)
+
 
 
 def init_game():
@@ -111,6 +130,7 @@ def init_main_window():
     canvas.grid(row=1, column=0, columnspan=3)
     scores_text.grid(row=0, column=2)
     canvas.bind('<Button-1>', click_event_handler)
+    canvas.bind('<Motion>', move_event_handler)
 
 
 def timer_event():
@@ -124,12 +144,24 @@ def timer_event():
 
 
 def click_event_handler(event):
+    """считывание клика и выстред
+    """
     global shells_on_fly
     shell = gun.shoot()
     shells_on_fly.append(shell)
 
 
-if __name__=="__main__":
+def move_event_handler(event):
+    """считывание движения мыши и поворот пушки
+    """
+    global move_x, move_y
+    move_x = event.x
+    move_y = event.y
+    gun.gun_move()
+
+    #FIXME
+
+if __name__ == "__main__":
     init_main_window()
     init_game()
     timer_event()
