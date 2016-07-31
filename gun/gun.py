@@ -1,5 +1,6 @@
 from tkinter import *
 from random import choice, randint
+import math
 
 #я взял для удобства квадратный экран
 screen_width = 400
@@ -76,10 +77,15 @@ class Gun:
         :return: возвращает объект снаряда
         """
         shell = Ball()
-        shell._x = self._x + self._lx
-        shell._y = self._y + self._ly
-        shell._Vx = self._lx/10
-        shell._Vy = self._ly/10
+        #shell._x = self._x + self._lx
+        #shell._y = self._y + self._ly
+        shell._x = self._kx
+        shell._y = self._ky
+        #shell._Vx = self._lx/10
+        shell._Vx = round(math.sqrt((length/10)**2/(1+k**2)))
+        #shell._Vy = self._ly/10
+        shell._Vy = k*shell._Vx
+        #почему-то на определенном углу не летит, стоит на месте (k=0?)
         shell._R = 5
         shell.fly()
         return shell
@@ -90,16 +96,15 @@ class Gun:
         движение пушки за мышью и смещение шарика
         :return:
         """
+        global k, length
+        length=math.sqrt(self._lx**2 + self._ly**2)
         self._kx = self._x+self._lx
         self._ky = self._y+self._ly
-        if self._kx > move_x:
-            self._kx = move_x
-        elif self._ky < move_y:
-            self._ky = move_y
-        elif move_x>self._kx and move_y<screen_width-move_x:
-            self._kx = move_x
-        elif move_y<self._ky and move_x>screen_height-move_y:
-            self._ky = move_y
+        if move_x>0:
+            k = (move_y-screen_height)/move_x
+            self._kx = round(math.sqrt(length**2/(1+k**2)))
+            self._ky = k*self._kx+self._y
+
         canvas.coords(self._avatar, self._x, self._y,
                       self._kx, self._ky)
 
